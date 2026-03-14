@@ -15,6 +15,9 @@ using System.Web.UI;
 using Microsoft.ReportingServices.Interfaces;
 using System.Windows.Forms;
 using Microsoft.ReportingServices.ReportProcessing.ReportObjectModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
 namespace Visor_Reporte.Controllers
 {
     public class ReportRequest
@@ -80,483 +83,33 @@ namespace Visor_Reporte.Controllers
         private string IdArrendatario { get { return Request["IdArrendatario"] != null ? Request["IdArrendatario"] : string.Empty; } }
         private string IdPropietario { get { return Request["IdPropietario"] != null ? Request["IdPropietario"] : string.Empty; } }
         private string IdVehiculo { get { return Request["IdVehiculo"] != null ? Request["IdVehiculo"] : string.Empty; } }
-
         // GET: Reportes
-
-
         public ActionResult Index()
         {
             var parametros = HttpRequestHelper.ConvertRequestToDictionary(Request);
             var rutaReporte = HttpRequestHelper.ObtenerRutaReporteYElimnarDelDictionary(parametros, "NombreReporte");
-            ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //Dictionary<string, string> parametros = new Dictionary<string, string>();
 
-            //if (NombreReporte == "ejemplo")
-            //{
-            //    parametros = ObtenerParametrosReporteEECC();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(NombreReporte, parametros);
-            //}
-            //if (NombreReporte == "REPORTESOLICITUDESTRABAJODEMANDA")
-            //{
-            //    string rutaReporte = "/EDI/Reportes/Reportes/Nuevos/ReporteSolicitudesTrabajoDemandaV2";
-            //    parametros = ObtenerParametrosREPORTESOLICITUDESTRABAJODEMANDA();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "REPORTEATENCIONESADJUNTOS")
-            //{
-            //    string rutaReporte = "/EDI/Reportes/Reportes/Nuevos/ReporteAtencionesAdjuntosV2";
-            //    parametros = ObtenerParametrosREPORTEATENCIONESADJUNTOS();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "REPORTESOLICITUDESTRABAJODEMANDACLIENTE")
-            //{
-            //    string rutaReporte = "/EDI/Reportes/Reportes/Nuevos/ReporteSolicitudesTrabajoDemandaClienteV2";
-            //    parametros = ObtenerParametrosREPORTESOLICITUDESTRABAJODEMANDACLIENTE();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "REPORTEVALORACIONSERVICIO")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/KPI/ReporteValoracionServicioV2";
-            //    parametros = ObtenerParametrosREPORTEVALORACIONSERVICIO();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "ReporteSKU")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/ReporteSKUV2";
-            //    parametros = ObtenerParametrosReporteSKU();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "ReporteMaterialesSolicitudes")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/ReporteMaterialesSolicitudesV2";
-            //    parametros = ObtenerParametrosReporteMaterialesSolicitudes();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "ReporteServiciosSolicitudes")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/ReporteServiciosSolicitudesV2";
-            //    parametros = ObtenerParametrosReporteServiciosSolicitudes();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "ReporteListadoInmuebles")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/NUEVOS/ReporteListadoInmueblesV2";
-            //    parametros = ObtenerParametrosReporteListadoInmuebles();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}            
-            //if (NombreReporte == "OrdenPagoMiBanco")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/CONTROL PATRIMONIAL/ALQUILERES/OrdenPagoMiBancoV2";
-            //    parametros = ObtenerParametrosReporteOrdenPagoMiBanco();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "ReporteSolicitudesTrabajoPlanificado")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/NUEVOS/ReporteSolicitudesTrabajoPlanificadoV2";
-            //    parametros = ObtenerParametrosReporteSolicitudesTrabajoPlanificado();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "ReporteSolicitudesTrabajoPlanificado2")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/NUEVOS/ReporteSolicitudesTrabajoPlanificado2_V2";
-            //    parametros = ObtenerParametrosReporteSolicitudesTrabajoPlanificado2();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "ReporteFacturacionGasto")
-            //{
-            //    string rutaReporte = "/EDI/Reportes/Reportes/ReporteFacturacionGastoV2";
-            //    parametros = ObtenerParametrosReporteFacturacionGasto();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "ReporteInventarioVehicular")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/FLOTA VEHICULAR/REPORTEVEHICULAR";
-            //    parametros = ObtenerParametrosReporteInventarioVehiculo();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "REPORTEREGLAASIGNACIONSUBREPORTE")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/REPORTEREGLAASIGNACIONSUBREPORTE";
-            //    parametros = ObtenerParametrosREPORTEREGLAASIGNACIONSUBREPORTE();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "REPORTELOGACCIONSOLICITUD")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/SOLICITUDES/REPORTELOGACCIONSOLICITUD";
-            //    parametros = ObtenerParametrosREPORTELOGACCIONSOLICITUD();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
-            //if (NombreReporte == "REPORTELOGACCIONSOLICITUD")
-            //{
-            //    string rutaReporte = "/EDI/REPORTES/REPORTES/SOLICITUDES/REPORTELOGACCIONSOLICITUD";
-            //    parametros = ObtenerParametrosREPORTELOGACCIONSOLICITUD();
-            //    ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
-            //}
+
+            // Determinar si usar modo local o remoto
+            string nombreReporte = Path.GetFileNameWithoutExtension(rutaReporte);
+            bool usarModoLocal = ConfigurationManager.AppSettings["IsModeDeveloper"] == "SI" ||
+                                _reportConfigs.ContainsKey(nombreReporte);
+
+            if (usarModoLocal)
+            {
+                ViewBag.ReportViewer = ConfigurarReportLocal(rutaReporte, parametros);
+            }
+            else
+            {
+                ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
+            }
+
+
+
+            //ViewBag.ReportViewer = ConfigurarReportServer(rutaReporte, parametros);
+            
             return View();
-        }     
-        private Dictionary<string, string> ObtenerParametrosREPORTELOGACCIONSOLICITUD()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdUsuario", IdUsuario},
-                {"Usuario", NombreUsuario},
-                {"Cliente", IdCliente},
-                {"TipoST", IdTipoSolicitud},               
-                {"FechaIni", FechaInicio},
-                {"FechaFin", FechaFin},                
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosREPORTEREGLAASIGNACIONSUBREPORTE()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdUsuario", IdUsuario},
-                {"Usuario", NombreUsuario},
-                {"IdsCliente", IdCliente},
-                {"IdsTipoRegla", IdTipoRegla}                
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosReporteEECC()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdCia", IdCia}
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosREPORTESOLICITUDESTRABAJODEMANDA()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdUsuario", IdUsuario},
-                {"Usuario", NombreUsuario},
-                {"Cliente", IdCliente},
-                {"Inmueble", IdInmueble},
-                {"CentroCost", DescripcionCentroCosto},
-                {"EstadoSol", IdEstadoSolicitud},
-                {"TipoST", IdTipoSolicitud},
-                {"TipoGrupo", IdTipoGrupo},
-                {"Proveedor", IdProvedor},
-                {"GrupoMant", IdGrupoMantenimiento},
-                {"UnidadMant", IdUnidadMantenimiento},
-                {"InspectorFM", IdInspectorFM},
-                {"InspectorCli", IdInspectorCliente},
-                {"UsuarioSoli", NombreUsuarioSolicitante},
-                {"ClasifProbl", IdClasificacionProblema},
-                {"ZonalOT", IdZonalOT},
-                {"FechaIni", FechaInicio},
-                {"FechaFin", FechaFin},
-                {"TecnicoEjec", IdTecnicoEjecuta},
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosREPORTEVALORACIONSERVICIO()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdUsuario", IdUsuario},
-                {"Usuario", NombreUsuario},
-                {"Cliente", IdCliente},
-                {"Inmueble", IdInmueble},
-                {"Proveedor", IdProvedor},
-                {"ListaInspectores", IdsInspectores},
-                {"NombreCliente", NombreCliente},
-                {"FechaIni", FechaInicio},
-                {"FechaFin", FechaFin}
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosREPORTESOLICITUDESTRABAJODEMANDACLIENTE()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdUsuario", IdUsuario},
-                {"Usuario", NombreUsuario},
-                {"Cliente", IdCliente},
-                {"Proveedor", IdProvedor},
-                {"TipoST", IdTipoSolicitud},
-                {"Departamento", IdDepartamento},
-                {"EstadoSol", IdEstadoSolicitud},
-                {"Provincia", IdProvincia},
-                {"TecnicoEjec", IdTecnicoEjecuta},
-                {"Distrito", IdDistrito},
-                {"Inmueble", IdInmueble},
-                {"FechaIni", FechaInicio},
-                {"FechaFin", FechaFin},                
-                //{"CentroCost", DescripcionCentroCosto},                                
-                //{"TipoGrupo", IdTipoGrupo},                
-                //{"GrupoMant", IdGrupoMantenimiento},
-                //{"UnidadMant", IdUnidadMantenimiento},
-                //{"InspectorFM", IdInspectorFM},
-                //{"InspectorCli", IdInspectorCliente},
-                //{"UsuarioSoli", NombreUsuarioSolicitante},
-                //{"ClasifProbl", IdClasificacionProblema},
-                //{"ZonalOT", IdZonalOT},                
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosReporteOrdenPagoMiBanco()
-        {
-            return new Dictionary<string, string>
-            {
-                {"fechaIni", FechaInicio},
-                {"fechaFin", FechaFin},
-                {"tipocambio", TipoCambio}
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosReporteSolicitudesTrabajoPlanificado()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdUsuario", IdUsuario},
-                {"Usuario", NombreUsuario},
-                {"Cliente", IdCliente},                
-                {"INMUEBLE", NombreInmueble},
-                {"EstadoSol", IdEstadoSolicitud},
-                {"CodigoPlan", CodigoPlan},
-                {"Frecuencia", IdFrecuencia},
-                {"GrupoMant", IdGrupoMantenimiento},
-                {"UnidadMant", IdUnidadMantenimiento},
-                {"InspectorFM", IdInspectorFM},
-                {"InspectorCli", IdInspectorCliente},
-                {"Proveedor", IdProvedor},
-                {"TecnicoEjec", IdTecnicoEjecuta},
-                {"ZonalOT", IdZonalOT},
-                {"FechaIni", FechaInicio},
-                {"FechaFin", FechaFin}
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosReporteInventarioVehiculo()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdVehiculo", IdVehiculo},
-                {"Url",""},
-                //{"FechaFinActual", FechaFin},
-                //{"IdTipoSolicitud", IdTipoSolicitud},
-                //{"IdZonal", IdZonal},
-                //{"ListaGrupoMantenimiento", IdGrupoMantenimiento},
-                //{"ListaUnidadMantenimiento", IdUnidadMantenimiento},
-                //{"ListaProveedor", IdProvedor},
-                //{"ListaInspectores", IdInspectorCliente},
-                //{"CentroCosto", DescripcionCentroCosto},
-                //{"ListaClasificacionProblema", IdClasificacionProblema},
-                //{"IdZonalOT", IdZonalOT},
-                //{"IdTipoGasto", IdTipoGasto},
-                //{"IdTipoTarifario", IdTipoTarifario}
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosReporteFacturacionGasto()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdCliente", IdCliente},
-                {"FechaInicioActual", FechaInicio},
-                {"FechaFinActual", FechaFin},
-                {"IdTipoSolicitud", IdTipoSolicitud},
-                {"IdZonal", IdZonal},                
-                {"ListaGrupoMantenimiento", IdGrupoMantenimiento},
-                {"ListaUnidadMantenimiento", IdUnidadMantenimiento},
-                {"ListaProveedor", IdProvedor},
-                {"ListaInspectores", IdInspectorCliente},
-                {"CentroCosto", DescripcionCentroCosto},
-                {"ListaClasificacionProblema", IdClasificacionProblema},
-                {"IdZonalOT", IdZonalOT},
-                {"IdTipoGasto", IdTipoGasto},
-                {"IdTipoTarifario", IdTipoTarifario}
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosReporteSolicitudesTrabajoPlanificado2()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdUsuario", IdUsuario},
-                {"Usuario", NombreUsuario},
-                {"Cliente", IdCliente},
-                //{"CodInmueble", CodInmueble},
-                {"INMUEBLE", NombreInmueble},
-                {"EstadoSol", IdEstadoSolicitud},
-                {"CodigoPlan", CodigoPlan},
-                {"Frecuencia", IdFrecuencia},
-                {"FechaIni", FechaInicio},
-                {"FechaFin", FechaFin}
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosReporteListadoInmuebles()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdUsuario", IdUsuario},
-                {"Usuario", NombreUsuario},
-                {"Cliente", IdCliente},
-                {"CodInmueble", CodInmueble},
-                {"INMUEBLE", NombreInmueble},
-                {"Direccion", Direccion},
-                {"Zonal", IdZonal},
-                {"ZonalOT", IdZonalOT},
-                {"Condicion", IdCondicion},
-                {"Uso", IdUso},
-                {"Situ", IdSituacion},
-                {"Pais", IdPais},
-                {"Departamento", IdDepartamento},
-                {"Provincia", IdProvincia},
-                {"Distrito", IdDistrito},
-                {"FechaIni", FechaInicio},
-                {"FechaFin", FechaFin},
-                {"Arrendatario", IdArrendatario},
-                {"Propietario", IdPropietario}
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosReporteServiciosSolicitudes()
-        {
-
-            return new Dictionary<string, string>
-            {
-                {"IdCliente", IdCliente},
-                {"FechaInicioActual", FechaInicio},
-                {"FechaFinActual", FechaFin},
-                {"IdTipoSolicitud", IdTipoSolicitud},
-                {"IdZonal", IdZonal},
-                {"ListaUbigeo", IdUbigeo},
-                {"ListaInmueble", IdInmueble},
-                {"ListaEdificio", IdEdificio},
-                {"ListaNivel", IdNivel},
-                {"ListaGrupoMantenimiento", IdGrupoMantenimiento},
-                {"ListaUnidadMantenimiento", IdUnidadMantenimiento},
-                {"ListaProveedor", IdProvedor},
-                {"ListaInspectores", IdsInspectores},
-                {"CentroCosto", DescripcionCentroCosto},
-                {"NombreSolicitanteReporte", NombreUsuarioSolicitante},
-//                {"IdEstado", IdEstadoSolicitud},
-            };
-
-            //return new Dictionary<string, string>
-            //{
-            //    {"IdCliente", IdCliente},
-            //    {"FechaInicioActual", FechaInicio},
-            //    {"FechaFinActual", FechaFin},
-            //    {"IdTipoSolicitud", IdTipoSolicitud},
-            //    {"IdZonal", IdZonal},
-            //    {"ListaUbigeo", IdUbigeo},
-            //    {"ListaInmueble", IdInmueble},
-            //    {"ListaEdificio", IdEdificio},
-            //    {"ListaNivel", IdNivel},
-            //    {"ListaGrupoMantenimiento", IdGrupoMantenimiento},
-            //    {"ListaUnidadMantenimiento", IdUnidadMantenimiento},
-            //    {"ListaProveedor", IdProvedor},
-            //    {"ListaInspectores", IdsInspectores},
-            //    {"CentroCosto", DescripcionCentroCosto},
-            //    {"ListaMateriales", IdsMateriales},
-            //    {"ListaAlmacenes", IdsAlmacenes},
-            //    {"NombreSolicitanteReporte", NombreUsuarioSolicitante},
-            //    {"IdEstado", IdEstadoSolicitud}
-            //};           
-        }
-        private Dictionary<string, string> ObtenerParametrosReporteMaterialesSolicitudes()
-        {
-            return new Dictionary<string, string>
-            {
-                {"IdCliente", IdCliente},
-                {"FechaInicioActual", FechaInicio},
-                {"FechaFinActual", FechaFin},
-                {"IdTipoSolicitud", IdTipoSolicitud},
-                {"IdZonal", IdZonal},
-                {"ListaUbigeo", IdUbigeo},
-                {"ListaInmueble", IdInmueble},
-                {"ListaEdificio", IdEdificio},
-                {"ListaNivel", IdNivel},
-                {"ListaGrupoMantenimiento", IdGrupoMantenimiento},
-                {"ListaUnidadMantenimiento", IdUnidadMantenimiento},
-                {"ListaProveedor", IdProvedor},
-                {"ListaInspectores", IdsInspectores},
-                {"ListaMateriales", IdsMateriales},
-                {"ListaAlmacenes", IdsAlmacenes},
-                {"CentroCosto", DescripcionCentroCosto},
-                {"NombreSolicitanteReporte", NombreUsuarioSolicitante},
-                {"IdEstado", IdEstadoSolicitud},
-            };
-
-
-
-
-        }
-        private Dictionary<string, string> ObtenerParametrosReporteSKU()
-        {
-            return new Dictionary<string, string>
-            {
-                {"idCliente", IdCliente},
-                {"fechaInicio", FechaInicio},
-                {"fechaFin", FechaFin},
-                {"CodigoSKU", CodigoSKU},
-                {"CentroCosto", DescripcionCentroCosto},
-                {"NombreCorto", NombreCorto},
-                {"IdUnidadMantenimiento", IdUnidadMantenimiento},
-                {"TipoSolicitud", IdTipoSolicitud},
-                {"NombreSolicitanteReporte", NombreUsuario}
-            };
-        }
-        private Dictionary<string, string> ObtenerParametrosREPORTEATENCIONESADJUNTOS()
-        {
-            return new Dictionary<string, string>
-            {
-                {"Usuario", NombreUsuario},
-                {"IdUsuario", IdUsuario},
-                {"Cliente", IdCliente},
-                {"Inmueble", IdInmueble},
-                {"EstadoSol", IdEstadoSolicitud},
-                {"Proveedor", IdProvedor},
-                {"FechaIni", FechaInicio},
-                {"FechaFin", FechaFin},
-                {"TieneAdjunto", TieneAdjunto}
-                //{"CentroCost", DescripcionCentroCosto},                
-                //{"TipoST", IdTipoSolicitud},
-                //{"TipoGrupo", IdTipoGrupo},                
-                //{"GrupoMant", IdGrupoMantenimiento},
-                //{"UnidadMant", IdUnidadMantenimiento},
-                //{"InspectorFM", IdInspectorFM},
-                //{"InspectorCli", IdInspectorCliente},
-                //{"UsuarioSoli", NombreUsuarioSolicitante},
-                //{"ClasifProbl", IdClasificacionProblema},
-                //{"ZonalOT", IdZonalOT},
-                
-                
-            };
-        }
-        public ReportViewer ConfigurarReportServerDinamico(string urlReporte, Dictionary<string, string> parametros)
-        {
-            try
-            {
-                ReportViewer viewer = new ReportViewer();
-                viewer.ProcessingMode = ProcessingMode.Remote;
-                viewer.SizeToReportContent = true;
-                // Habilitar la caché de informes
-                viewer.LocalReport.EnableExternalImages = true;
-                viewer.LocalReport.EnableHyperlinks = true;
-                viewer.ZoomMode = ZoomMode.FullPage;
-                //viewer.Width = Unit.Percentage(100);
-                //viewer.Height = Unit.Percentage(100);
-                bool IsModeDeveloper = ConfigurationManager.AppSettings["IsModeDeveloper"] == "SI";
-                if (IsModeDeveloper)
-                    viewer.ServerReport.ReportServerCredentials = new ReportServerCredentials(ConfigurationManager.AppSettings["ReportUser"], ConfigurationManager.AppSettings["ReportPassword"], "");
-                viewer.ServerReport.ReportServerUrl = new Uri(ConfigurationManager.AppSettings["SSRSReportUrls"]);
-                viewer.ServerReport.ReportPath = urlReporte;
-                viewer.ServerReport.Timeout = 600000;
-                foreach (KeyValuePair<string, string> valor in parametros)
-                {
-                    viewer.ServerReport.SetParameters(new ReportParameter(valor.Key, valor.Value, false));
-                }
-                //var usuarioSession = Session["Usuario"] as UsuarioSesionDto;
-                //viewer.ServerReport.SetParameters(new ReportParameter("NombreCIA", "usuarioSession.NombreCompania", false));
-                //viewer.ServerReport.SetParameters(new ReportParameter("IdCia", "1", false));
-                //viewer.ServerReport.SetParameters(new ReportParameter("IdPerfil", "1", false));
-                //viewer.ServerReport.SetParameters(new ReportParameter("IdUsuario", "1", false));
-                viewer.ServerReport.Refresh();
-                return viewer;
-            }
-            catch (Exception e)
-            {
-                //Log.Error(e.Message, e);
-
-                throw;
-            }
-
-        }
+        }         
         public ReportViewer ConfigurarReportServer(string urlReporte, Dictionary<string, string> parametros)
         {
             try
@@ -596,5 +149,210 @@ namespace Visor_Reporte.Controllers
             }
 
         }
+
+
+
+        // Diccionario para mapear reportes con sus stored procedures y parámetros
+        private readonly Dictionary<string, ReportConfig> _reportConfigs = new Dictionary<string, ReportConfig>
+        {
+            {
+                "ReporteConsultasReclamosV2",
+                new ReportConfig
+                {
+                    StoredProcedure = "REP.USP_REPORTE_CONSULTAS_RECLAMOS",
+                    DataSetName = "dataSetConsultasReclamos",
+                    Parameters = new List<string>
+                    {
+                        "IdCliente", "FechaDesde", "FechaHasta", "IdTipoTicket", "IdCategoriaTicket",
+                        "IdZonal", "IdInmueble", "IdEdificio", "IdNivel", "IdGrupoMantenimiento",
+                        "IdUnidadMantenimiento", "IdResponsable", "ListaSolicitante", "ListaZonalOT",
+                        "ListaEstadoTicket", "CodigoSolicitud"
+                    }
+                }
+            }
+            // Aquí puedes agregar más configuraciones para otros reportes
+            // "OtroReporte", new ReportConfig { ... }
+        };
+        public ReportViewer ConfigurarReportLocal(string rutaReporte, Dictionary<string, string> parametros)
+        {
+            try
+            {
+                var viewer = new ReportViewer();
+                viewer.ProcessingMode = ProcessingMode.Local;
+                viewer.SizeToReportContent = true;
+                viewer.LocalReport.EnableExternalImages = true;
+                viewer.LocalReport.EnableHyperlinks = true;
+                viewer.ZoomMode = ZoomMode.FullPage;
+
+                // Obtener nombre del reporte
+                string nombreReporte = ObtenerNombreReporte(rutaReporte);
+
+                // Verificar si existe configuración para este reporte
+                if (!_reportConfigs.ContainsKey(nombreReporte))
+                {
+                    throw new Exception($"No existe configuración para el reporte: {nombreReporte}");
+                }
+
+                var config = _reportConfigs[nombreReporte];
+
+                // Ruta física del archivo .rdl
+                string rutaFisica = ObtenerRutaFisicaReporte(nombreReporte);
+                if (!System.IO.File.Exists(rutaFisica))
+                {
+                    throw new FileNotFoundException($"Archivo .rdl no encontrado: {rutaFisica}");
+                }
+
+                viewer.LocalReport.ReportPath = rutaFisica;
+
+                // Obtener datos del stored procedure
+                var datos = EjecutarStoredProcedure(config.StoredProcedure, config.Parameters, parametros);
+
+                // Configurar parámetros del reporte
+                ConfigurarParametrosReporte(viewer, parametros);
+
+                // Asignar el DataSource
+                viewer.LocalReport.DataSources.Clear();
+                viewer.LocalReport.DataSources.Add(new ReportDataSource(config.DataSetName, datos));
+
+                viewer.LocalReport.Refresh();
+                return viewer;
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error configurando reporte local '{rutaReporte}': {e.Message}", e);
+            }
+        }
+
+
+        /// <summary>
+        /// Configura los parámetros del reporte
+        /// </summary>
+        private void ConfigurarParametrosReporte(ReportViewer viewer, Dictionary<string, string> parametros)
+        {
+            var reportParams = new List<ReportParameter>();
+
+            foreach (var param in parametros)
+            {
+                //if (!string.IsNullOrEmpty(param.Value))
+                //{
+                    reportParams.Add(new ReportParameter(param.Key, param.Value));
+                //}
+            }
+
+            // Agregar parámetros por defecto si no están presentes
+            if (!parametros.ContainsKey("IdUsuario"))
+            {
+                reportParams.Add(new ReportParameter("IdUsuario", "43"));
+            }
+            if (!parametros.ContainsKey("Usuario"))
+            {
+                reportParams.Add(new ReportParameter("Usuario", "USER"));
+            }
+
+            viewer.LocalReport.SetParameters(reportParams.ToArray());
+        }
+
+        /// <summary>
+        /// Obtiene el nombre del reporte desde la ruta
+        /// </summary>
+        private string ObtenerNombreReporte(string rutaReporte)
+        {
+            if (string.IsNullOrEmpty(rutaReporte))
+                return string.Empty;
+
+            // Si es una ruta completa, obtener solo el nombre del archivo
+            if (rutaReporte.Contains("/") || rutaReporte.Contains("\\"))
+            {
+                return Path.GetFileNameWithoutExtension(rutaReporte.Split('/').Last());
+            }
+
+            // Si ya es solo el nombre
+            return rutaReporte.Replace(".rdl", "");
+        }
+
+        /// <summary>
+        /// Obtiene la ruta física del archivo .rdl
+        /// </summary>
+        private string ObtenerRutaFisicaReporte(string nombreReporte)
+        {
+            // Primero buscar en la carpeta Reportes
+            string rutaPrincipal = Server.MapPath($"~/Reportes/{nombreReporte}.rdl");
+            if (System.IO.File.Exists(rutaPrincipal))
+                return rutaPrincipal;
+
+            // Buscar en subcarpetas comunes
+            string[] subcarpetas = { "Nuevos", "KPI", "Solicitudes" };
+            foreach (string subcarpeta in subcarpetas)
+            {
+                string rutaSubcarpeta = Server.MapPath($"~/Reportes/{subcarpeta}/{nombreReporte}.rdl");
+                if (System.IO.File.Exists(rutaSubcarpeta))
+                    return rutaSubcarpeta;
+            }
+
+            // Si no se encuentra, devolver la ruta principal para que lance excepción
+            return rutaPrincipal;
+        }
+        private DataTable EjecutarStoredProcedure(string storedProcedure, List<string> parametrosRequeridos, Dictionary<string, string> parametrosRecibidos)
+        {
+            var dt = new DataTable();
+            var connectionStringSettings = ConfigurationManager.ConnectionStrings["EDIContext"];
+            if (connectionStringSettings == null)
+            {
+                throw new Exception("No se encontró la cadena de conexión 'EDIContext' en el Web.config");
+            }
+            string connectionString = connectionStringSettings.ConnectionString;
+            using (var conn = new SqlConnection(connectionString))
+            using (var cmd = new SqlCommand(storedProcedure, conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandTimeout = 300; // 5 minutos
+
+                // Agregar parámetros dinámicamente
+                foreach (string parametro in parametrosRequeridos)
+                {
+                    object valor = ObtenerValorParametro(parametrosRecibidos, parametro);
+                    cmd.Parameters.AddWithValue($"@{parametro}", valor);
+                }
+
+                conn.Open();
+                using (var adapter = new SqlDataAdapter(cmd))
+                {
+                    adapter.Fill(dt);
+                }
+            }
+            return dt;
+        }
+        /// <summary>
+        /// Obtiene el valor de un parámetro con manejo de tipos
+        /// </summary>
+        private object ObtenerValorParametro(Dictionary<string, string> parametros, string nombreParametro)
+        {
+            if (parametros.ContainsKey(nombreParametro) && !string.IsNullOrEmpty(parametros[nombreParametro]))
+            {
+                string valor = parametros[nombreParametro];
+
+                // Manejo especial según el nombre del parámetro
+                if (nombreParametro.Contains("Fecha"))
+                {
+                    return DateTime.TryParse(valor, out DateTime fecha) ? (object)fecha : DBNull.Value;
+                }
+                else if (nombreParametro.StartsWith("Id") && nombreParametro != "IdUsuario")
+                {
+                    return int.TryParse(valor, out int id) ? (object)id : DBNull.Value;
+                }
+                else
+                {
+                    return valor;
+                }
+            }
+            return DBNull.Value;
+        }
+
+    }
+    public class ReportConfig
+    {
+        public string StoredProcedure { get; set; }
+        public string DataSetName { get; set; }
+        public List<string> Parameters { get; set; }
     }
 }
