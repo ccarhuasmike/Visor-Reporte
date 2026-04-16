@@ -169,7 +169,20 @@ namespace Visor_Reporte.Controllers
                         "ListaEstadoTicket", "CodigoSolicitud"
                     }
                 }
-            }
+            },
+            {
+                "LISTADOALQUILERES2",
+                new ReportConfig
+                {
+                    StoredProcedure = "ALQ.USP_REPORTE_LISTADO_ALQUILERES",
+                    DataSetName = "dsListarAlquileres",
+                    Parameters = new List<string>
+                    {
+                        "IdArrendatario", "IdZonal", "CodigoInmueble", "NombreInmueble", "IdEstado",
+                        "IdConcepto","FechaDesde","FechaHasta"
+                    }
+                }
+            },
             // Aquí puedes agregar más configuraciones para otros reportes
             // "OtroReporte", new ReportConfig { ... }
         };
@@ -332,11 +345,12 @@ namespace Visor_Reporte.Controllers
                 string valor = parametros[nombreParametro];
 
                 // Manejo especial según el nombre del parámetro
-                if (nombreParametro.Contains("Fecha"))
-                {
-                    return DateTime.TryParse(valor, out DateTime fecha) ? (object)fecha : DBNull.Value;
-                }
-                else if (nombreParametro.StartsWith("Id") && nombreParametro != "IdUsuario")
+                //if (nombreParametro.Contains("Fecha"))
+                //{
+                //    return DateTime.TryParse(valor, out DateTime fecha) ? (object)fecha : DBNull.Value;
+                //}
+                //else 
+                if (nombreParametro.StartsWith("Id") && nombreParametro != "IdUsuario")
                 {
                     return int.TryParse(valor, out int id) ? (object)id : DBNull.Value;
                 }
